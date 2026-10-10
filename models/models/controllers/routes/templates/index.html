@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Tarefas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px auto; max-width: 600px; background-color: #f4f4f9; padding: 20px; }
+        h1 { color: #333; text-align: center; }
+        .form-container { display: flex; gap: 10px; margin-bottom: 20px; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        .filtros { margin-bottom: 20px; text-align: center; }
+        .filtros a { margin: 0 5px; text-decoration: none; color: #007bff; font-weight: bold; }
+        .filtros a.ativo { text-decoration: underline; color: #0056b3; }
+        ul { list-style-type: none; padding: 0; }
+        li { background: white; padding: 12px; margin-bottom: 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .conclvida { text-decoration: line-through; color: #888; }
+        .btn-group a { text-decoration: none; padding: 5px 10px; border-radius: 3px; color: white; font-size: 12px; margin-left: 5px; }
+        .btn-concluir { background-color: #007bff; }
+        .btn-remover { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>📋 Gerenciador de Tarefas</h1>
+
+    <form action="/adicionar" method="POST" class="form-container">
+        <input type="text" name="descricao" placeholder="Digite uma nova tarefa..." required>
+        <button type="submit">Adicionar</button>
+    </form>
+
+    <div class="filtros">
+        Filtros: 
+        <a href="/?status=todas" class="{{ 'ativo' if status_filtro == 'todas' }}">Todas</a> |
+        <a href="/?status=pendentes" class="{{ 'ativo' if status_filtro == 'pendentes' }}">Pendentes</a> |
+        <a href="/?status=concluidas" class="{{ 'ativo' if status_filtro == 'concluidas' }}">Concluídas</a>
+    </div>
+
+    <ul>
+        {% for tarefa in tarefas %}
+            <li>
+                <span class="{{ 'conclvida' if tarefa.concluida }}">{{ tarefa.descricao }}</span>
+                <div class="btn-group">
+                    {% if not tarefa.concluida %}
+                        <a href="/concluir/{{ tarefa.id }}" class="btn-concluir">Concluir</a>
+                    {% endif %}
+                    <a href="/remover/{{ tarefa.id }}" class="btn-remover">Remover</a>
+                </div>
+            </li>
+        {% else %}
+            <p style="text-align: center; color: #777;">Nenhuma tarefa encontrada.</p>
+        {% endfor %}
+    </ul>
+</body>
+</html>
